@@ -1,10 +1,12 @@
-package org.learntotravel.master.direction;
+package org.learntotravel.web_ui.direction;
+
+import java.util.List;
 
 public class Direction {
 
     private long id;
 
-    private String[] emails;
+    private List<String> emails;
 
     private int threshold;
 
@@ -20,11 +22,11 @@ public class Direction {
         this.id = id;
     }
 
-    public String[] getEmails() {
+    public List<String> getEmails() {
         return emails;
     }
 
-    public void setEmails(String[] emails) {
+    public void setEmails(List<String> emails) {
         this.emails = emails;
     }
 
@@ -50,25 +52,5 @@ public class Direction {
 
     public void setType(SourceType type) {
         this.type = type;
-    }
-
-    enum SourceType {
-        AZAIR(1, "azzair");
-
-        private final int type;
-        private final String name;
-
-        SourceType(int type, String name) {
-            this.type = type;
-            this.name = name;
-        }
-
-        public int getType() {
-            return type;
-        }
-
-        public String getName() {
-            return name;
-        }
     }
 }

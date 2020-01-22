@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>org.learn-to-travel</groupId>
-	<artifactId>master</artifactId>
+	<artifactId>web-ui</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>master</name>
+	<name>web-ui</name>
 	<description>Learn to travel WEB UI</description>
 
 	<properties>

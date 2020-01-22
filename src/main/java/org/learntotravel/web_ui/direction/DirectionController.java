@@ -1,4 +1,4 @@
-package org.learntotravel.master.direction;
+package org.learntotravel.web_ui.direction;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
