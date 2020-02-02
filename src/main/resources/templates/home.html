@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <th:block th:insert="components/header.html :: header"></th:block>
+    <title>Home</title>
+</head>
+<body>
+
+<h1>Learn to Travel</h1>
+
+<button id="addDirection" class="float-left submit-button" >Add Direction</button>
+
+<script type="text/javascript">
+    document.getElementById("addDirection").onclick = function () {
+        location.href = "/direction";
+    };
+</script>
+
+</body>
+</html>
