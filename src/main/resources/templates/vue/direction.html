@@ -1,0 +1,167 @@
+<script type="text/x-template" id="direction">
+    <div>
+        <div class="alertMessage inline success" v-if="saved">You have successfully saved ({{ id }}) {{ name }}.</div>
+        <div class="alertMessage inline error" v-if="errorMessages.length">
+            <ul>
+                <li v-for="error in errorMessages">{{ error }}</li>
+            </ul>
+        </div>
+
+        <h3>Add new direction!</h3>
+
+        <form v-on:submit.prevent="onSubmit">
+
+            <div class="input-group">
+                <label class="required" for="id">ID</label>
+                <div>
+                    <input type="text" name="name" id="id" title="ID" required="required"
+                           class="medium"
+                           v-model="id"
+                           disabled="disabled"/>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="threshold">Threshold</label>
+                <div>
+                    <input type="number" name="threshold" id="threshold" title="threshold"
+                           required="required" min="1" step="1" max="9999"
+                           v-model="threshold"/>
+                </div>
+            </div>
+
+            <div>
+                <label>Emails</label>
+                <div v-for="(value, name, index) in emails">
+                    <email :id="index"
+                           :value="value"
+                           v-on:changeEmail="changeEmail($event)"
+                           v-on:removeEmail="removeEmail($event)">
+                    </email>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="threshold">Source</label>
+                <div>
+                    <input type="text" name="source" id="source" title="source" required="required"
+                           class="small"
+                           min="0"
+                           v-model="source"/>
+                </div>
+            </div>
+
+            <div>
+                <input type="submit" value="Submit"/>
+            </div>
+        </form>
+    </div>
+</script>
+
+<script type="text/javascript">
+    Vue.component('direction', {
+        props: {
+            id: {
+                type: Number,
+                default: null,
+            },
+            errorMessages: {
+                type: [Array, Object],
+                default: () => [],
+            },
+            threshold: {
+                type: Number,
+                default: null,
+            },
+            source: {
+                type: String,
+                default: ''
+            },
+        },
+        data() {
+            return {
+                error: false,
+                saved: false,
+                emails: {
+                    0: 'test1@test.ru',
+                    1: 'test2@test.ru',
+                    2: 'test3@test.ru',
+                    3: 'test4@test.ru',
+                },
+                saveAction: '/direction/save',
+            };
+        },
+        created() {
+        },
+        methods: {
+            changeEmail(data) {
+                this.emails[data.id] = data.email;
+            },
+            removeEmail(data) {
+                console.log(data);
+                console.log(delete this.emails[data.id]);;
+            },
+            processData(data) {
+            },
+            onSubmit() {
+                loading('Saving', true);
+
+                this.saved = false;
+                this.skin_resource_id = null;
+
+                if (parseInt(this.type) === parseInt(this.topLayerType)) {
+                    this.skin_resource_id = this.topLayerResource;
+                } else if (parseInt(this.type) === parseInt(this.backgroundType)) {
+                    this.skin_resource_id =  this.backgroundResource;
+                }
+
+                this.$api.post(this.saveAction, {
+                    type: this.type,
+                    name: this.name,
+                    description: this.description,
+                    skin_element_id: this.id,
+                    tile_template_id: this.tileTemplateId ? this.tileTemplateId : null,
+                    skin_resource_id: this.skin_resource_id,
+
+                })
+                    .then(response => {
+                        if (response.errors && !response.id) {
+                            this.setErrors(response.errors);
+                        } else {
+                            unloading();
+
+                            this.saved = true;
+                            this.error = false;
+
+                            this.setErrors([]);
+
+                            if (!this.id) {
+                                let $callbacks = {};
+                                let message = 'Successfully saved and after close modal page will be reloaded';
+                                $callbacks.hide = function () {
+                                    window.location.href = $.buffalo.regulator.buildUrlPath(
+                                        '\\Buffalo\\Regulator\\Controller\\storeSkinElement',
+                                        'editAction',
+                                        {id: response.id}
+                                    );
+                                };
+
+                                $.buffalo.regulator.modalAjax.modal(
+                                    'Success save',
+                                    message,
+                                    'regulatorSuccess',
+                                    undefined,
+                                    undefined,
+                                    $callbacks
+                                );
+                            }
+                        }
+                    })
+                    .catch(response => {
+                        this.setErrors(['Unknown save error']);
+                    })
+            }
+        },
+        template: '#direction'
+    });
+</script>

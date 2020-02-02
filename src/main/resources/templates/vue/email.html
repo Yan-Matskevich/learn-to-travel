@@ -1,0 +1,52 @@
+<script type="text/x-template" id="email">
+    <div>
+        <div class="input-group">
+            <div>
+                <input type="text" name="email" :id="_uid" title="email" required="required"
+                       v-model="email"  @input="onChange"/>
+                    <a href="#" class="btn btn-inverse" @click.prevent="removeItem">
+                        <i class=""></i> Remove Item
+                    </a>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">
+    Vue.component('email', {
+        props: {
+            id: {
+                type: [Number],
+                default: 0,
+            },
+            value: {
+                type: String,
+                default: ''
+            },
+        },
+        data() {
+            return {
+                email: this.value,
+            };
+        },
+        created() {
+        },
+        methods: {
+            removeItem() {
+                this.$emit('removeEmail', {
+                    id: this.id,
+                });
+            },
+            onChange() {
+                this.$emit(
+                    "changeEmail",
+                    {
+                        id: this.id,
+                        email: this.email,
+                    }
+                );
+            }
+        },
+        template: '#email'
+    });
+</script>
