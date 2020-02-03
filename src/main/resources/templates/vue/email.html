@@ -3,8 +3,8 @@
         <div class="input-group">
             <div>
                 <input type="text" name="email" :id="_uid" title="email" required="required"
-                       v-model="email"  @input="onChange"/>
-                    <a href="#" class="btn btn-inverse" @click.prevent="removeItem">
+                       v-model="item.email"  @input="onChange"/>
+                    <a href="#" class="btn btn-inverse" @click.prevent="onRemove">
                         <i class=""></i> Remove Item
                     </a>
             </div>
@@ -15,34 +15,23 @@
 <script type="text/javascript">
     Vue.component('email', {
         props: {
-            id: {
-                type: [Number],
-                default: 0,
+            item: {
+                type: Object,
+                default: () => {},
             },
-            value: {
-                type: String,
-                default: ''
-            },
-        },
-        data() {
-            return {
-                email: this.value,
-            };
-        },
-        created() {
         },
         methods: {
-            removeItem() {
+            onRemove() {
                 this.$emit('removeEmail', {
-                    id: this.id,
+                    index: this.item.index,
                 });
             },
             onChange() {
                 this.$emit(
                     "changeEmail",
                     {
-                        id: this.id,
-                        email: this.email,
+                        index: this.item.index,
+                        email: this.item.email,
                     }
                 );
             }

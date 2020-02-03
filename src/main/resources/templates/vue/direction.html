@@ -32,13 +32,16 @@
 
             <div>
                 <label>Emails</label>
-                <div v-for="(value, name, index) in emails">
-                    <email :id="index"
-                           :value="value"
+                <div v-for="(item, index) in processedEmails">
+                    <email
+                           :item="item"
                            v-on:changeEmail="changeEmail($event)"
                            v-on:removeEmail="removeEmail($event)">
                     </email>
                 </div>
+                <a class="btn" href="#" @click.prevent="addEmptyItem">
+                    <i class="icon-plus"></i> Add Email
+                </a>
             </div>
 
             <div class="input-group">
@@ -61,105 +64,75 @@
 <script type="text/javascript">
     Vue.component('direction', {
         props: {
-            id: {
-                type: Number,
-                default: null,
-            },
             errorMessages: {
                 type: [Array, Object],
                 default: () => [],
             },
-            threshold: {
-                type: Number,
-                default: null,
-            },
-            source: {
-                type: String,
-                default: ''
-            },
         },
         data() {
             return {
+                id: null,
+                threshold: null,
+                source: '',
                 error: false,
                 saved: false,
-                emails: {
-                    0: 'test1@test.ru',
-                    1: 'test2@test.ru',
-                    2: 'test3@test.ru',
-                    3: 'test4@test.ru',
-                },
+                emails: [
+                    'test1@test.ru',
+                    'test2@test.ru',
+                    'test3@test.ru',
+                    'test4@test.ru',
+                ],
+                processedEmails: [],
                 saveAction: '/direction/save',
+                index: 0,
             };
         },
         created() {
+            console.log(this.axios);
+            this.emails.map(el => this.addItem(el));
         },
         methods: {
             changeEmail(data) {
                 this.emails[data.id] = data.email;
             },
-            removeEmail(data) {
-                console.log(data);
-                console.log(delete this.emails[data.id]);;
+            removeEmail(item) {
+                let index = item.index;
+                this.processedEmails = this.processedEmails.filter(function (email) {
+                    return email.index !== index;
+                });
+            },
+            addEmptyItem() {
+                this.addItem('');
+            },
+            addItem(email) {
+                this.index++;
+                this.processedEmails.push(
+                    {
+                        index: this.index,
+                        email: email,
+                    }
+                )
             },
             processData(data) {
             },
             onSubmit() {
-                loading('Saving', true);
-
                 this.saved = false;
-                this.skin_resource_id = null;
 
-                if (parseInt(this.type) === parseInt(this.topLayerType)) {
-                    this.skin_resource_id = this.topLayerResource;
-                } else if (parseInt(this.type) === parseInt(this.backgroundType)) {
-                    this.skin_resource_id =  this.backgroundResource;
-                }
+                let emails = this.processedEmails.map(function(item) {
+                    return item.email;
+                });
 
-                this.$api.post(this.saveAction, {
-                    type: this.type,
-                    name: this.name,
-                    description: this.description,
-                    skin_element_id: this.id,
-                    tile_template_id: this.tileTemplateId ? this.tileTemplateId : null,
-                    skin_resource_id: this.skin_resource_id,
-
+                axios.post(this.saveAction, {
+                    params: {
+                        id: this.id,
+                        threshold: this.threshold,
+                        source: this.source,
+                        emails: this.emails,
+                    }
                 })
-                    .then(response => {
-                        if (response.errors && !response.id) {
-                            this.setErrors(response.errors);
-                        } else {
-                            unloading();
-
-                            this.saved = true;
-                            this.error = false;
-
-                            this.setErrors([]);
-
-                            if (!this.id) {
-                                let $callbacks = {};
-                                let message = 'Successfully saved and after close modal page will be reloaded';
-                                $callbacks.hide = function () {
-                                    window.location.href = $.buffalo.regulator.buildUrlPath(
-                                        '\\Buffalo\\Regulator\\Controller\\storeSkinElement',
-                                        'editAction',
-                                        {id: response.id}
-                                    );
-                                };
-
-                                $.buffalo.regulator.modalAjax.modal(
-                                    'Success save',
-                                    message,
-                                    'regulatorSuccess',
-                                    undefined,
-                                    undefined,
-                                    $callbacks
-                                );
-                            }
-                        }
-                    })
-                    .catch(response => {
-                        this.setErrors(['Unknown save error']);
-                    })
+                    .then(response => this.responseData = response.data)
+                    .catch(error => {
+                    });
             }
         },
         template: '#direction'
