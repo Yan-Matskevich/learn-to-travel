@@ -1,0 +1,14 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Add Direction Result</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script type="text/javascript" th:src="@{/js/lib/vue.js}"></script>
+</head>
+<body>
+<h1>Result</h1>
+<p th:text="'id: ' + ${direction.id}" />
+<p th:text="'source: ' + ${direction.source}" />
+<a href="/direction">Submit another direction</a>
+</body>
+</html>

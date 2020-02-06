@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <th:block th:insert="components/header.html :: header"></th:block>
+    <title>Add Direction</title>
+</head>
+<body>
+
+<div class="component" th:include="vue/direction.html"></div>
+<div class="component" th:include="vue/email.html"></div>
+
+<div id="manageDirection">
+    <direction>
+    </direction>
+</div>
+<script>
+    new Vue({
+        el: '#manageDirection',
+    });
+</script>
+
+</body>
+</html>

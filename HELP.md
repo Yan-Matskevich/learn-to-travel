@@ -1,7 +1,7 @@
 # Read Me First
 The following was discovered as part of building this project:
 
-* The original package name 'org.learn-to-travel.master' is invalid and this project uses 'org.learntotravel.master' instead.
+* The original package name 'org.learn-to-travel.master' is invalid and this project uses 'org.learntotravel.web_ui' instead.
 
 # Getting Started
 
