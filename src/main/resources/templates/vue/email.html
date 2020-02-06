@@ -3,7 +3,7 @@
         <div class="input-group">
             <div>
                 <input type="text" name="email" :id="_uid" title="email" required="required"
-                       v-model="item.email"  @input="onChange"/>
+                       v-model="item.email"  @input="onChange" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$"/>
                     <a href="#" class="btn btn-inverse" @click.prevent="onRemove">
                         <i class=""></i> Remove Item
                     </a>
