@@ -7,7 +7,7 @@
             </ul>
         </div>
 
-        <h3>Add new direction!</h3>
+        <h3>{{initCustomObject.pageTitle}}</h3>
 
         <form v-on:submit.prevent="onSubmit">
 
@@ -64,6 +64,10 @@
 <script type="text/javascript">
     Vue.component('direction', {
         props: {
+            initCustomObject: {
+                type: Object,
+                default: () => {},
+            },
             errorMessages: {
                 type: [Array, Object],
                 default: () => [],
@@ -71,17 +75,12 @@
         },
         data() {
             return {
-                id: null,
-                threshold: null,
-                source: '',
+                id: this.initCustomObject.id,
+                threshold: this.initCustomObject.threshold,
+                source: this.initCustomObject.source,
                 error: false,
                 saved: false,
-                emails: [
-                    'test1@test.ru',
-                    'test2@test.ru',
-                    'test3@test.ru',
-                    'test4@test.ru',
-                ],
+                emails: this.initCustomObject.emails,
                 processedEmails: [],
                 saveAction: '/direction/save',
                 index: 0,
@@ -123,14 +122,14 @@
                 });
 
                 axios.post(this.saveAction, {
-                    params: {
                         id: this.id,
                         threshold: this.threshold,
                         source: this.source,
                         emails: this.emails,
-                    }
                 })
-                    .then(response => this.responseData = response.data)
+                    .then(response => {this.responseData = response.data;
+                        window.location = "/direction/"+response.data.id+"/edit"
+                    })
                     .catch(error => {
                     });
             }
