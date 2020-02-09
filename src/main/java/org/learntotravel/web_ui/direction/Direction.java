@@ -12,7 +12,7 @@ public class Direction {
 
     private String source;
 
-    private SourceType type;
+    private SourceType sourceType;
 
     public long getId() {
         return id;
@@ -46,11 +46,11 @@ public class Direction {
         this.source = source;
     }
 
-    public SourceType getType() {
-        return type;
+    public SourceType getSourceType() {
+        return sourceType;
     }
 
-    public void setType(SourceType type) {
-        this.type = type;
+    public void setSourceType(SourceType sourceType) {
+        this.sourceType = sourceType;
     }
 }

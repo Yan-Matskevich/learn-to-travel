@@ -1,18 +1,12 @@
 package org.learntotravel.web_ui.direction;
 
 public enum SourceType {
-    AZAIR(1, "Azzair");
+    AZAIR("Azzair");
 
-    private final int type;
     private final String name;
 
-    SourceType(int type, String name) {
-        this.type = type;
+    SourceType(String name) {
         this.name = name;
-    }
-
-    public int getType() {
-        return type;
     }
 
     public String getName() {

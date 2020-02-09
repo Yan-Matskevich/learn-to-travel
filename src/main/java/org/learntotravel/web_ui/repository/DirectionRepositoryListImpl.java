@@ -49,7 +49,7 @@ public class DirectionRepositoryListImpl implements DirectionReposiotry {
         oldDirection.setSource(direction.getSource());
         oldDirection.setEmails(direction.getEmails());
         oldDirection.setThreshold(direction.getThreshold());
-        oldDirection.setType(direction.getType());
+        oldDirection.setSourceType(direction.getSourceType());
         return oldDirection.getId();
     }
 
