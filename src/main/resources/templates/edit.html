@@ -2,7 +2,7 @@
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
     <th:block th:insert="components/header.html :: header"></th:block>
-    <title>Add Direction</title>
+    <title>Edit Direction</title>
 </head>
 <body>
 
@@ -13,13 +13,15 @@
     <direction   :init-custom-object="initObject">
     </direction>
 </div>
-<script>
+<script th:inline="javascript">
+    var directionEmails = /*[[${direction.emails}]]*/ [];
+
     let initData = {
-       pageTitle : "Add new direction!",
-       id : null,
-       threshold: null,
-       emails: ['','',''],
-       source: ''
+       pageTitle : "Edit new direction!",
+       id :  [[${direction.id}]],
+       threshold :  [[${direction.threshold}]],
+       emails: directionEmails,
+       source: [[${direction.source}]]
     }
 
     new Vue({
