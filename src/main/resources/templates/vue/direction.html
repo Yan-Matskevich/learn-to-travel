@@ -1,13 +1,13 @@
 <script type="text/x-template" id="direction">
     <div>
-        <div class="alertMessage inline success" v-if="saved">You have successfully saved ({{ id }}) {{ name }}.</div>
-        <div class="alertMessage inline error" v-if="errorMessages.length">
+        <div class="alert alert-danger" v-if="errorMessages.length">
+            Some errors have appeared:
             <ul>
-                <li v-for="error in errorMessages">{{ error }}</li>
+                <li class="alert alert-danger" v-for="error in errorMessages">{{ error }}</li>
             </ul>
         </div>
 
-        <h3>{{initCustomObject.pageTitle}}</h3>
+        <h3>{{initData.pageTitle}}</h3>
 
         <form v-on:submit.prevent="onSubmit">
 
@@ -39,13 +39,13 @@
                            v-on:removeEmail="removeEmail($event)">
                     </email>
                 </div>
-                <a class="btn" href="#" @click.prevent="addEmptyItem">
+                <a class="btn btn-primary" href="#" @click.prevent="addEmptyItem">
                     <i class="icon-plus"></i> Add Email
                 </a>
             </div>
 
             <div class="input-group">
-                <label for="threshold">Source</label>
+                <label for="source">Source</label>
                 <div>
                     <input type="text" name="source" id="source" title="source" required="required"
                            class="small"
@@ -54,8 +54,23 @@
                 </div>
             </div>
 
+            <div class="input-group">
+                <label for="source_type">Source Type</label>
+                <select v-model="sourceType"
+                        id="source_type"
+                        name="source_type"
+                        required="required">
+                    <option value=""> - Select One - </option>
+                    <option
+                            v-for="(sourceType, index) in sourceTypes"
+                            :value="index">
+                        {{ sourceType }}
+                    </option>
+                </select>
+            </div>
+
             <div>
-                <input type="submit" value="Submit"/>
+                <input type="submit" class="btn btn-success" value="Submit"/>
             </div>
         </form>
     </div>
@@ -64,30 +79,30 @@
 <script type="text/javascript">
     Vue.component('direction', {
         props: {
-            initCustomObject: {
+            initData: {
                 type: Object,
                 default: () => {},
             },
             errorMessages: {
-                type: [Array, Object],
+                type: Array,
                 default: () => [],
             },
         },
         data() {
             return {
-                id: this.initCustomObject.id,
-                threshold: this.initCustomObject.threshold,
-                source: this.initCustomObject.source,
+                id: this.initData.id ? this.initData.id : null,
+                threshold: this.initData.threshold ? this.initData.threshold : null,
+                source: this.initData.source ? this.initData.source : null,
                 error: false,
-                saved: false,
-                emails: this.initCustomObject.emails,
+                emails: this.initData.emails ? this.initData.emails : [],
+                sourceType: this.initData.sourceType ? this.initData.sourceType : 'AZAIR',
                 processedEmails: [],
                 saveAction: '/direction/save',
                 index: 0,
+                sourceTypes: this.initData.sourceTypes,
             };
         },
         created() {
-            console.log(this.axios);
             this.emails.map(el => this.addItem(el));
         },
         methods: {
@@ -112,11 +127,17 @@
                     }
                 )
             },
-            processData(data) {
+            checkEmails() {
+                return this.processedEmails.length > 0;
+            },
+            setError(message) {
+                this.errorMessages.push(message);
             },
             onSubmit() {
-                this.saved = false;
-
+                if (!this.checkEmails()) {
+                    this.setError('You should add at least one email for notification!')
+                    return;
+                }
                 let emails = this.processedEmails.map(function(item) {
                     return item.email;
                 });
@@ -125,7 +146,8 @@
                         id: this.id,
                         threshold: this.threshold,
                         source: this.source,
-                        emails: this.emails,
+                        emails: emails,
+                        sourceType: this.sourceType,
                 })
                     .then(response => {this.responseData = response.data;
                         window.location = "/direction/"+response.data.id+"/edit"

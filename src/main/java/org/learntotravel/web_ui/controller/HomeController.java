@@ -1,4 +1,4 @@
-package org.learntotravel.web_ui.home;
+package org.learntotravel.web_ui.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

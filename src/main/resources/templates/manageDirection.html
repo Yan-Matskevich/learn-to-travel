@@ -10,17 +10,20 @@
 <div class="component" th:include="vue/email.html"></div>
 
 <div id="manageDirection">
-    <direction   :init-custom-object="initObject">
+    <direction
+            :init-data="initObject">
     </direction>
 </div>
-<script>
+<script th:inline="javascript">
     let initData = {
-       pageTitle : "Add new direction!",
-       id : null,
-       threshold: null,
-       emails: ['','',''],
-       source: ''
-    }
+        pageTitle : [[${direction.id}]] > 0 ? 'Edit Direction!' : 'Add new Direction!',
+        id :  [[${direction.id}]],
+        threshold :  [[${direction.threshold}]],
+        emails: [[${direction.emails}]],
+        source: [[${direction.source}]],
+        sourceTypes: [[${sourceTypes}]],
+        sourceType: [[${direction.sourceType}]],
+    };
 
     new Vue({
         el: '#manageDirection',
