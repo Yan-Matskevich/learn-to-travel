@@ -36,7 +36,7 @@ public class DirectionController {
         Direction direction = repository.getDirection(id);
 
         if (direction == null) {
-            return "404";
+            return "error";
         }
 
         model.addAttribute("direction", direction);
@@ -68,4 +68,5 @@ public class DirectionController {
 
         model.addAttribute("sourceTypes", sourceTypes);
     }
+
 }
