@@ -2,9 +2,8 @@ package org.learntotravel.web_ui.controller;
 
 import org.learntotravel.web_ui.direction.Direction;
 import org.learntotravel.web_ui.direction.SourceType;
-import org.learntotravel.web_ui.repository.DirectionReposiotry;
+import org.learntotravel.web_ui.repository.DirectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -12,17 +11,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 public class DirectionController {
 
     @Autowired
-    @Qualifier("DirectionRepositoryList")
-    DirectionReposiotry repository;
+    DirectionRepository repository;
 
     @GetMapping("/direction/add")
     public String directionAdd(Model model) {
@@ -32,28 +30,23 @@ public class DirectionController {
     }
 
     @GetMapping("/direction/{id}/edit")
-    public String directionEdit(@PathVariable(name = "id") int id, Model model) {
-        Direction direction = repository.getDirection(id);
+    public String directionEdit(@PathVariable(name = "id") String id, Model model) {
+        Optional<Direction> foundDirection = repository.findById(UUID.fromString(id));
 
-        if (direction == null) {
+        if (foundDirection.get() == null) {
             return "404";
         }
 
-        model.addAttribute("direction", direction);
+        model.addAttribute("direction", foundDirection.get());
         addDefaultVariables(model);
         return "manageDirection";
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @ResponseBody
-    @PostMapping(value = "/direction/save",  produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/direction/save", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Object> directionSave(@RequestBody Direction direction, Model model) throws IOException {
-        long id;
-        if (direction.getId()>0){
-            id = repository.updateDirection(direction);
-        } else {
-            id = repository.addDirection(direction);
-        }
+        UUID id = repository.save(direction).getId();
         Map<String, Object> response = new HashMap<>();
         response.put("id", id);
         return response;
@@ -65,7 +58,6 @@ public class DirectionController {
         for (SourceType source : SourceType.values()) {
             sourceTypes.put(source.toString(), source.getName());
         }
-
         model.addAttribute("sourceTypes", sourceTypes);
     }
 }
