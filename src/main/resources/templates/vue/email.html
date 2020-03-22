@@ -1,7 +1,7 @@
 <script type="text/x-template" id="email">
     <div>
         <div class="input-group">
-            <div>
+            <div class="email_control">
                 <input type="text" name="email" :id="_uid" title="email" required="required"
                        v-model="item.email"  @input="onChange"/>
                     <a href="#" class="btn btn-danger" @click.prevent="onRemove">
