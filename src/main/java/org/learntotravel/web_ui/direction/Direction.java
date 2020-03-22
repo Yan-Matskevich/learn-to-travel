@@ -1,10 +1,16 @@
 package org.learntotravel.web_ui.direction;
 
-import java.util.List;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+import java.util.UUID;
+
+@Document(collection = "direction")
 public class Direction {
 
-    private long id;
+    @Id
+    private UUID id;
 
     private List<String> emails;
 
@@ -14,11 +20,11 @@ public class Direction {
 
     private SourceType sourceType;
 
-    public long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
