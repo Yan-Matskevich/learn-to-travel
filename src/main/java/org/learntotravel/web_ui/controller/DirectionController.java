@@ -33,8 +33,8 @@ public class DirectionController {
     public String directionEdit(@PathVariable(name = "id") String id, Model model) {
         Optional<Direction> foundDirection = repository.findById(UUID.fromString(id));
 
-        if (foundDirection.get() == null) {
-            return "404";
+        if (!foundDirection.isPresent()) {
+            return "error";
         }
 
         model.addAttribute("direction", foundDirection.get());
